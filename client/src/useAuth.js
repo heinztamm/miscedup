@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react'
-import fetch from 'node-fetch'
 import axios from 'axios'
 
 export default function useAuth(code) {
@@ -11,22 +10,35 @@ export default function useAuth(code) {
            code,
         })
         .then(res => {
-            console.log(res.data)
+            setAccessToken(res.data.access_token)
+            setRefreshToken(res.data.refresh_token)
+            setExpiresIn(61)
             window.history.pushState({}, null, "/")
         })
         .catch(error => {
-            // window.location = "/"
+            window.location = "/"
             console.log(error.response)
         })
     }, [code])
-// useEffect(() => {
-//     fetch("http://localhost:3001/login", {
-//         method : 'POST',
-//         body : code
-//     }).then(res => {
-//         console.log(res.data)
-//     }).catch(() => {
-//         window.location = "/"
-//     })
-// }, [code])
+
+    useEffect(() => {
+        if (!refreshToken || !expiresIn) return
+        const timeout = setTimeout(() => {
+
+            axios.post("http://localhost:3001/refresh", {
+                refreshToken,
+            })
+            .then(res => {
+                setAccessToken(res.body.access_token)
+                setExpiresIn(61)
+            })
+            .catch(() => {
+                window.location = "/"
+            })
+        }, (expiresIn - 60) * 1000)
+
+        return () => clearTimeout(timeout)
+    }, [refreshToken, expiresIn])
+
+    return accessToken
 }
