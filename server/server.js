@@ -19,10 +19,11 @@ app.post("/login", (req, res) => {
 
     spotifyApi.authorizationCodeGrant(code)
     .then(data => {
+        console.log("yes");
         res.json({
-            accessToken: data.body.accessToken,
-            refreshToken: data.body.refreshToken,
-            expiresIn: data.body.expiresIn,
+            accessToken: data.body.access_token,
+            refreshToken: data.body.refresh_token,
+            expiresIn: data.body.expires_in,
         })
     }).catch(err => {
         console.error(err);
@@ -30,4 +31,3 @@ app.post("/login", (req, res) => {
     })
 })
 app.listen(3001)
-// 13:54 How to build a better spotify with react
