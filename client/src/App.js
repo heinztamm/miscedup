@@ -7,7 +7,7 @@ const code = new URLSearchParams(window.location.search).get('code')
 
 function App() {
   const accessToken = useAuth(code)
-  return code ? <Dashboard code={code} /> :  <Login />;
+  return code ? <Dashboard code={code} /> :  <Login />
 }
 
 export default App
