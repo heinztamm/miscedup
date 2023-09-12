@@ -10,9 +10,9 @@ export default function useAuth(code) {
            code,
         })
         .then(res => {
-            setAccessToken(res.data.accessToken)
-            setRefreshToken(res.data.refreshToken)
-            setExpiresIn(res.data.refreshToken)
+            setAccessToken(res.data.access_token)
+            setRefreshToken(res.data.refresh_token)
+            setExpiresIn(61)
             window.history.pushState({}, null, "/")
         })
         .catch(() => {
@@ -28,16 +28,16 @@ export default function useAuth(code) {
                 refreshToken,
             })
             .then(res => {
-                setAccessToken(res.data.accessToken)
-                setExpiresIn(res.data.refreshToken)
+                setAccessToken(res.body.access_token)
+                setExpiresIn(61)
             })
             .catch(() => {
                 window.location = "/"
             })
-        }, (expiresIn-60) * 1000 )
+        }, (expiresIn - 60) * 1000)
 
         return () => clearInterval(interval)
-        }, [refreshToken, expiresIn])
+    }, [refreshToken, expiresIn])
 
     return accessToken
 }
